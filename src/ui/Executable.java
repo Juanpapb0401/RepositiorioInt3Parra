@@ -1,9 +1,10 @@
 package ui;
 
 import model.Controller;
+
 import java.util.Scanner;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+
 
 
 public class Executable {
@@ -39,9 +40,10 @@ public class Executable {
 			System.out.println("2. Register, modify and delete books and magazines"); //Ready
 			System.out.println("3. Purchase a book"); //Ready
 			System.out.println("4. Subscribe to a magazine"); //Ready
-			System.out.println("5. Simulate a reading session (regular and premium)");
-			System.out.println("6.");
-			System.out.println("7. Salir ");
+            System.out.println("5. Simulate reading session"); //Ready
+			System.out.println("6. Show the Library of a User (AD only here)"); //Ready
+            System.out.println("7. Generate Reports"); //Ready -parcialmente
+			System.out.println("8. Salir ");
 			int option = reader.nextInt();
 
 			switch (option) {
@@ -56,16 +58,25 @@ public class Executable {
 				sellBook();
 				break;
 			case 4:
-				sellMagazine();
+                System.out.println("1.Buy Magazines 2.Unsubscribe a magazine");
+                int optionBasic = reader.nextInt();
+                if (optionBasic==1){
+                    sellMagazine();
+                }else{
+                    unsubscribe();
+                }
 				break;
 			case 5:
-				
+                sesionDeLectura();
 				break;
 			case 6:
-				consultBooks();
+				mostrarBiblotecaUser();
                 break;
 			case 7:
-				flag = true;
+                req8();
+                break;
+            case 8:
+                flag = true;
 				break;
 			}
 		}
@@ -454,33 +465,43 @@ public class Executable {
 */
     private void sellBook() {
 
-		String query = controller.getBookList();
+        String query = controller.consultRegisterUser();
+
+		String query2 = controller.getBookList();
 
 		if (query.equals("")) {
 
-			System.out.println("There is not books registered");
+			System.out.println("There is not users registered");
 		} else {
 
 			System.out.println("This is the info in the system");
 
 			System.out.println(query);
 
-			System.out.println("Enter the book do you want to buy");
+            System.out.println("Enter the user");
+            int optionUser= reader.nextInt();
 
-			int optionBook = reader.nextInt();
+            if (query2.equals("")){
+                System.out.println("There is not books registered");
+            } else {
 
-			if (controller.sellBook(optionBook-1)) {
+                System.out.println(query2);
+
+                System.out.println("Enter the book do you want to buy");
+			    int optionBook = reader.nextInt();
+
+			    if (controller.sellBook1(optionBook-1, optionUser-1)) {
 
 				System.out.println("Transaction succesfully");
 
-			} else {
+			    } else {
 
-				System.out.println("Erro in the transaction");
+				System.out.println("Error in the transaction");
 			}
-
-		}
-
+        }
 	}
+
+}
 /**Method title: sellMagazine
 *Description: The method allows you to suscribe objectos Magazine
 *Return: Suscribe to a objecto of the Magazine class
@@ -489,34 +510,239 @@ public class Executable {
 
 		String query = controller.getMagazineList();
 
-		if (query.equals("")) {
+        String query2 = controller.consultRegisterUser();
 
-			System.out.println("There is not magazines registered");
+		if (query2.equals("")) {
+
+			System.out.println("There is not users registered");
+		} else {
+
+			System.out.println("This is the info in the system");
+
+			System.out.println(query2);
+
+            System.out.println("Enter the user");
+            int optionUser = reader.nextInt();
+
+            if (query.equals("")){
+                System.out.println("There are not magazines registered");
+            }else{
+
+                System.out.println(query);
+
+                System.out.println("Enter the magazine do you want to buy");
+			    int optionMagazine = reader.nextInt();
+
+			    if (controller.sellMagazine1(optionMagazine-1,optionUser-1)) {
+
+				    System.out.println("Transaction succesfully");
+
+			    }else {
+
+				System.out.println("Error in the transaction");
+			    }
+            }
+		}
+
+	}
+
+    private void unsubscribe(){
+
+        String query = controller.verificarProductsMagazine();
+
+        String query2 = controller.consultRegisterUser();
+
+		if (query2.equals("")) {
+
+			System.out.println("There is not users registered");
+		} else {
+
+			System.out.println("This is the info in the system");
+
+			System.out.println(query2);
+
+            System.out.println("Enter the user");
+            int optionUser = reader.nextInt();
+
+            if (query.equals("")){
+                System.out.println("There are not magazines registered");
+            }else{
+
+                System.out.println(query);
+
+                System.out.println("Enter the magazine do you want to unsubscribe");
+			    int optionMagazine = reader.nextInt();
+
+                System.out.println(controller.deleteSuscripcionMagazine(optionMagazine-1, optionUser-1));
+            }
+        }
+
+    }
+    /* 
+
+    private void sesionDeLectura1(){
+
+        String query = controller.consultRegisterUser();
+
+        if (query.equals("")) {
+
+			System.out.println("There is not users registered");
 		} else {
 
 			System.out.println("This is the info in the system");
 
 			System.out.println(query);
+            
+            System.out.println("Enter the user");
 
-			System.out.println("Enter the magazine do you want to buy");
+			int optionUser = reader.nextInt();
+        
+            System.out.println(controller.printStringMatrix(optionUser-1));
 
-			int optionMagazine = reader.nextInt();
+            int pages = 1;
+            int pagesRead = 0;
+            String optionMenuSimu;
+    
+            System.out.println("Digite el codigo del producto bibliografico para la simulacion de lectura");
 
-			if (controller.sellMagazine(optionMagazine-1)) {
+            reader.nextLine();
+            String codigoProducto = reader.nextLine();
+            if (controller.verificarId(codigoProducto)){
 
-				System.out.println("Transaction succesfully");
+                do{
+            
+                System.out.println(controller.simulacionLectura1(optionUser-1, codigoProducto));
+                System.out.println("Digite A (en mayuscula) para la anterior pagina");
+                System.out.println("Digite S (en mayuscula) para la siguiente pagina");
+                System.out.println("Digite B (en mayuscula) para salir");
+                optionMenuSimu = reader.nextLine();
 
-			} else {
+            if (optionMenuSimu.equals("A")){
+                if (pages!=1){
+                    pages--;
+                    pagesRead++;
+                }else{
+                    System.out.println("Digite una opcion correcta");
+                }
+            }else if (optionMenuSimu.equals("S")){
+                pages++;
+                pagesRead++;
+            }else{
+                System.out.println("Elegiste salir");
+            }
 
-				System.out.println("Error in the transaction");
-			}
+            System.out.println("Has leido un total de "+pagesRead + " paginas");
+            controller.simulacionLectura(optionUser-1, codigoProducto, pagesRead, pages);
+            controller.adReadingSesion(optionUser-1, codigoProducto, optionMenuSimu);
 
-		}
+            }while(!optionMenuSimu.equals("B"));
+            
+        }
+    }
 
-	}
+}
+*/
 
+private void sesionDeLectura(){
 
+    String msg = "\nSesion de lectura en progreso:";
+    msg+="\nEste producto bibliografico no se encuentra entre su productos comprados";
 
+    System.out.println("Digita tu usuario");
+
+    System.out.println(controller.consultRegisterUser());
+    int userPosition = reader.nextInt();
+
+    String query = controller.printStringMatrix(userPosition-1);
+
+    reader.nextLine();
+
+    System.out.println(query);
+
+    System.out.println("Digite el codico del producto");
+    String productId = reader.nextLine();
+
+    boolean flag = false;
+
+    while (!flag) {
+
+        System.out.println(controller.simulacionLectura1(userPosition-1, productId));
+
+        if (!controller.simulacionLectura1(userPosition-1, productId).equals(msg)) {
+
+            System.out.println("\nDigite A para ir a la antrior pagina");
+            System.out.println("\nDigite S para ir a la siguiente pagina");
+            System.out.println("\nDigite B para volver a la biblioteca");
+            String optionMenu = reader.nextLine();
+
+            controller.adReadingSesion(userPosition-1, productId, optionMenu);
+
+            if (optionMenu.equals("B")){
+
+                flag = true;
+
+            }
+        }
+
+        else{
+
+            flag = true;
+
+        }
+
+    }
+
+}
+
+    private void mostrarBiblotecaUser(){
+
+        String query = controller.consultRegisterUser();
+
+        if (query.equals("")) {
+
+			System.out.println("There is not users registered");
+		} else {
+
+			System.out.println("This is the info in the system");
+
+			System.out.println(query);
+            
+            System.out.println("Enter the user");
+
+			int optionUser = reader.nextInt();
+
+           System.out.println(controller.printStringMatrix(optionUser-1));
+        } 
+    }
+        
+            
+    private void req8(){
+
+        System.out.println("1.Product Biblio pages read");
+        System.out.println("2.Gener or Category the one most read");
+        System.out.println("3.Top 5 Book & Magazine most read");
+        System.out.println("4.Genre num sold, total value, Category num active, total value");
+        int option = reader.nextInt();
+
+        switch(option){
+            case 1:
+            System.out.println(controller.totalNumberOfPagesRead()); 
+            break;
+            case 2:
+            System.out.println(controller.genreMostReadBook());
+            System.out.println(controller.categryMostReadMagazine());
+            break;
+            case 3:
+            System.out.println(controller.top5Book());
+            System.out.println(controller.top5Magazine());
+            break;
+            case 4:
+            System.out.println(controller.mostSoldBookMagazines());
+            break;
+            
+
+        }
+    }
 
 
 

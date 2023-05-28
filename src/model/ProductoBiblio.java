@@ -11,7 +11,10 @@ public abstract class ProductoBiblio {
     private String uRL;
     private double price;
     private int numPagesRead;
+    private int pagesReadTemp;
 
+
+   
 
     public ProductoBiblio(String name, String id, int numPages, Calendar datePublication, String uRL, double price, int numPagesRead) {
 
@@ -21,7 +24,8 @@ public abstract class ProductoBiblio {
         this.datePublication = datePublication;
         this.uRL = uRL;
         this.price = price;
-        this.numPagesRead = 0;
+        this.numPagesRead = numPagesRead;
+        this.pagesReadTemp =1;
     }
 
 
@@ -93,6 +97,37 @@ public abstract class ProductoBiblio {
     public void setNumPagesRead(int numPagesRead) {
         this.numPagesRead = numPagesRead;
     }
-    
+
+   
+    public void addPagesRead(){
+        this.numPagesRead +=1;
+    }
+
+    public void addPagesReadTemp(){
+        this.pagesReadTemp += 1;
+
+    }
+
+    public void removePagesReadTemp(){
+
+        this.pagesReadTemp -= 1;
+
+    }
+
+    public void setPagesReadTempFinal(){
+
+        this.pagesReadTemp = 1;
+
+    }
+
+    public int getPagesReadTemp() {
+        return pagesReadTemp;
+    }
+
+
+    public void setPagesReadTemp(int pagesReadTemp) {
+        this.pagesReadTemp = pagesReadTemp;
+    }
+
 
 }
